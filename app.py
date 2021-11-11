@@ -17,4 +17,5 @@ async def on_ready():
 async def on_message(message):
     if 'happy birthday' in message.content.lower():
         await message.channel.send(f'Happy Birthday! {client.user}')
+        
 client.run(TOKEN)

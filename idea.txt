@@ -1,0 +1,31 @@
+Gatcha Game
+
+Purpose: The purpose of this project is to let users in a server have a gatcha game where they can collect and trade characters.
+
+
+- Characters are objects (I will use a class for all characters)
+- Attributes include:
+    - Name (string)
+    - Worth (int)
+    - Image of the character (string)
+    - Is owned (boolean)
+
+
+- All characters will be stored in a mockup database
+    - If the character is owned, it will have the owner's discord ID beside it
+
+- There will be a leaderboards list for the users to see who has the most points. It will also display the characters that they own. (Via flask).
+
+Rules: 
+- A user will have to type !roll for a chance to roll a character
+- If a character has already been rolled by a user, they are no longer able to be rolled for.
+- 
+
+Functionality:
+ - Users will be able to trade (!trade)
+ - Users will be able to sacrifice 2 of their characters for a chance for 1 better character (!sacrifice <Character 1> <character 2>)
+    - The code will check if the user owns both characters before continuing
+ - Users will be able to do the command: !character <Character name here> to display the character's stats and see if they're owned or not.
+    - If owned, display the owner's name
+
+ - Admin will be able to implement the characters
