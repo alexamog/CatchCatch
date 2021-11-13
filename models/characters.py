@@ -9,7 +9,9 @@ class Character:
         return self.owned
 
     def __str__(self):
-        return f'Owner: {self._owner} Value: {self.value} Owned: {self.owned}'
+        if self._owner == None:
+            return f'Character name: {self.name}\nValue: {self.value}'
+        return f'Character name: {self.name}\nValue: {self.value}\n Owned by: {self._owner}'
 
     @property
     def owner(self):
