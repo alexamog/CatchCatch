@@ -3,7 +3,7 @@ class Character:
         self.name = name
         self.value = value
         self.owned = owned
-        self.owner = owner
+        self._owner = owner
 
     def owned(self):
         return self.owned
@@ -15,7 +15,6 @@ class Character:
     def owner(self):
         """Returns the value of the owner"""
         return self.owner
-
     @owner.setter
     def owner(self, owner):
         """Sets the owner value"""

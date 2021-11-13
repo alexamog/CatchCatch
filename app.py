@@ -20,8 +20,8 @@ db = {}
 
 @bot.command(name='roll')
 async def roll_dice(ctx):
-    dice_roll = random.randint(0, 100)
-    await ctx.channel.send(f'{ctx.author}, you rolled a {dice_roll}')
+    choice = random.choice(list(db.keys()))
+    await ctx.channel.send(f'{ctx.author}, you got {choice}!')
 
 
 @bot.command(name='create')
