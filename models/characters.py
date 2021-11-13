@@ -9,15 +9,16 @@ class Character:
         return self.owned
 
     def __str__(self):
-        return self.value
+        return f'Owner: {self._owner} Value: {self.value} Owned: {self.owned}'
 
     @property
     def owner(self):
         """Returns the value of the owner"""
-        return self.owner
+        return self._owner
+
     @owner.setter
     def owner(self, owner):
         """Sets the owner value"""
         if self.owned == False and self.owner == None:
-            self.owner = owner
+            self._owner = owner
             self.owned = True
