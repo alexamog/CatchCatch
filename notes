@@ -1,3 +1,21 @@
-    for guild in client.guilds:
-        print(guild)
-#Displays the servers the bot is in 
+db = [
+    {   id:"123",
+        name: "Lenny#1111",
+        characters_owned = [
+            {
+                character_name: "Kenny",
+                value: "100",
+            },
+        ]
+    },
+        {
+            id: "456",
+            name: "Kenny#1111",
+            characters_owned = [
+                {
+                    character_name: "Kennen",
+                    value: "1000",
+                },
+        ]
+    },
+]
