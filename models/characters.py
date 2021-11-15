@@ -8,11 +8,6 @@ class Character:
     def owned(self):
         return self.owned
 
-    # def __str__(self):
-    #     if self._owner == None:
-    #         return f'```Character name: {self.name}\nValue: {self.value}```'
-    #     return f'```Character name: {self.name}\nValue: {self.value}\nOwned by: {self._owner}\n```'
-
     def discard(self):
         self._owner = None
         self.owned = False

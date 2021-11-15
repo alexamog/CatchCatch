@@ -4,7 +4,6 @@ from discord.ext import commands
 db = {}  # Temporary
 users = []  # temprary
 
-
 class UserFunctions(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -25,16 +24,16 @@ class UserFunctions(commands.Cog):
     async def roll_dice(self, ctx):
         """This function gives a chance for the user to recieve a character."""
         roll_done = False
-        list_of_pp = []
+        available_characters = []
         for characters in db.keys():
             if db[characters].owned == False:
-                list_of_pp.append(characters)
+                available_characters.append(characters)
 
-        if len(list_of_pp) == 0:
+        if len(available_characters) == 0:
             return await ctx.channel.send(f'It seems all characters have been claimed D:')
 
         while roll_done == False:
-            random_character = random.choice(list_of_pp)
+            random_character = random.choice(available_characters)
             if db[random_character].owned == False:
                 db[random_character].owner = ctx.author
                 await ctx.channel.send(f'{ctx.author.mention}, you got {random_character}!')
@@ -67,7 +66,6 @@ class UserFunctions(commands.Cog):
         await ctx.channel.send(f'```Name: {db[character_name].name}\nValue: {db[character_name].value}\nOwned: {db[character_name].owned} ```')
         if discord.File(f'photo_db/{character_name.lower()}.jpg'):
             await ctx.channel.send(file=discord.File(f'photo_db/{character_name.lower()}.jpg'))
-
 
 def setup(bot):
     bot.add_cog(UserFunctions(bot))

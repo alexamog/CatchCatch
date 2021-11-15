@@ -15,10 +15,14 @@ db = {}  # Temporary
 users = []  # temprary
 
 
+@client.event
+async def on_startup():
+    await bot.change_presence(statusactivity=discord.Game("ls is a utility."))
+    print('Bot is ready.')
+
 @bot.command()
 async def load(ctx, extension):  # This loads all the extensions
     bot.load_extension(f'cogs.{extension}')
-
 
 @bot.command()
 async def unload(ctx, extension):  # This unpacks/unloads the extensions
@@ -28,7 +32,6 @@ for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         # We take out the last 3 characters (.py) since we already specify files that end with .py
         bot.load_extension(f'cogs.{filename[:-3]}')
-
 
 @bot.command(name='slap')
 async def trade(ctx, target: discord.Member):

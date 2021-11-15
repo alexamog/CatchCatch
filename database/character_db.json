@@ -1,0 +1,53 @@
+{
+    "characters": [
+        {
+            "character_name": "James",
+            "character_value": 100,
+            "owned": "True",
+            "owned_by": "Kenny#0121",
+            "owner_id": "456"
+        },
+        {
+            "character_name": "Franklin",
+            "character_value": 100,
+            "owned": "True",
+            "owned_by": "Kenny#0121",
+            "owner_id": "456"
+        },
+        {
+            "character_name": "Gokce",
+            "character_value": 900,
+            "owned": "True",
+            "owned_by": "Kenny#0121",
+            "owner_id": "456"
+        },
+        {
+            "character_name": "Kennen",
+            "character_value": 100,
+            "owned": "True",
+            "owned_by": "Lenny#0321",
+            "owner_id": "123"
+        },
+        {
+            "character_name": "Malzahar",
+            "character_value": 100,
+            "owned": "True",
+            "owned_by": "Lenny#0321",
+            "owner_id": "123"
+        },
+        {
+            "character_name": "Kaneki",
+            "character_value": 100,
+            "owned": "True",
+            "owned_by": "Lenny#0321",
+            "owner_id": "123"
+        },
+        {
+            "character_name": "Steven",
+            "character_value": 900,
+            "owned": "False",
+            "owned_by": "None",
+            "owner_id": ""
+        }
+    ]
+}
