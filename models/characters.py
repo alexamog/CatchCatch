@@ -16,10 +16,3 @@ class Character:
     def owner(self):
         """Returns the value of the owner"""
         return self._owner
-
-    @owner.setter
-    def owner(self, owner):
-        """Sets the owner value"""
-        if self.owned == False and self._owner == None:
-            self._owner = owner
-            self.owned = True
