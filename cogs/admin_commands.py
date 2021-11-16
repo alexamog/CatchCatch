@@ -30,6 +30,8 @@ class AdminFunctions(commands.Cog):
     async def create(self, ctx, name, value):
         """Creates a character. Usage: !create [Character name] [Value] """
         new_char = Character(name, value)
+        if name.isalpha() == False or value.isnumeric() == False:
+            return await ctx.channel.send(f'Invalid input.')
         self.__add_character(new_char)
         await ctx.channel.send(f'Character name: {name} value: {value}')
 
