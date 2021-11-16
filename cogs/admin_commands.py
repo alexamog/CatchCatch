@@ -31,7 +31,6 @@ class AdminFunctions(commands.Cog):
         """Creates a character. Usage: !create [Character name] [Value] """
         new_char = Character(name, value)
         self.__add_character(new_char)
-        self.__save_character_db()
         await ctx.channel.send(f'Character name: {name} value: {value}')
 
     def __add_character(self, character):
@@ -42,6 +41,7 @@ class AdminFunctions(commands.Cog):
             "owned": character.owned,
             "owner_id": "None"
         })
+        self.__save_character_db()
 
     def __save_character_db(self):
         """Saves the character db"""
