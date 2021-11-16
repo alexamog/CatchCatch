@@ -3,6 +3,7 @@ import discord
 import random
 from discord.ext import commands
 
+
 class UserFunctions(commands.Cog):
     def __init__(self, bot):
         """Loads all the databases and initializes the discord bot"""
@@ -27,17 +28,13 @@ class UserFunctions(commands.Cog):
     @commands.command(name='register')
     async def register(self, ctx):
         """Provides the user the Gatcha role"""
-        role_id = 909351178888953896  # Change this depending on server role
-        role = discord.utils.get(self.bot.get_guild(
-            ctx.guild.id).roles, id=role_id)
 
         # Checks if the user already has the specified role and is inside the user db
         if ctx.author.id in self.users:
             return await ctx.channel.send(f'You are already in the db.')
 
         self.users.append(ctx.author.id)
-        await ctx.author.add_roles(role)
-        await ctx.channel.send(f'You have been added to the db and now have the {role} role!')
+        await ctx.channel.send(f'You have been added to the db')
         return self.__save_user_db()
 
     @commands.command(name='roll')
@@ -53,7 +50,7 @@ class UserFunctions(commands.Cog):
 
         random_character = random.choice(available_characters)
         self.__add_character(ctx.author.id, random_character)
-        await ctx.channel.send(f'{ctx.author.mention}, you got {random_character}!')
+        await ctx.channel.send(f'{ctx.author.mention}, you got {random_character["character_name"]} with a value of {random_character["character_value"]}!')
         return self.__save_character_db()
 
     @commands.command(name='discard')
@@ -75,6 +72,7 @@ class UserFunctions(commands.Cog):
             json.dump(self.users, fp)
 
     def __add_character(self, user_id, selected_character):
+        """Changes the character's attributes to make them be own by the user"""
         for picked_char in self.characters['characters']:
             if picked_char['character_name'] == selected_character['character_name']:
                 picked_char['owned'] = True
@@ -82,6 +80,7 @@ class UserFunctions(commands.Cog):
                 self.__save_character_db()
 
     def __discard_character(self, user_id, character_name):
+        """Lets the user discard the character"""
         for character in self.characters['characters']:
             if character['character_name'] == character_name and character['owner_id'] == user_id:
                 character['owned'] = False
@@ -99,7 +98,7 @@ class UserFunctions(commands.Cog):
             if current_character['character_name'] == character_name:
                 if current_character['owned'] == True:
                     return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}\nOwned: {current_character["owned"]}```'
-                return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}```'
+                return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}\nOwned: {current_character["owned"]}```'
 
 
 def setup(bot):

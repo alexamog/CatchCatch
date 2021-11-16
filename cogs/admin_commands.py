@@ -13,6 +13,7 @@ class AdminFunctions(commands.Cog):
             data = json.load(fp)
             for user in data:
                 self.users.append(user)
+
         with open('database/character_db.json') as fp:
             data = json.load(fp)
             for character in data['characters']:
