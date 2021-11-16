@@ -1,5 +1,4 @@
 import json
-import discord
 import random
 from discord.ext import commands
 
@@ -10,21 +9,8 @@ class UserFunctions(commands.Cog):
         self.bot = bot
         self.users = []
         self.characters = {'characters': []}
-        with open('database/user_db.json') as fp:
-            data = json.load(fp)
-            for user in data:
-                self.users.append(user)
-        with open('database/character_db.json') as fp:
-            data = json.load(fp)
-            for character in data['characters']:
-                self.characters['characters'].append(
-                    {
-                        'character_name': character['character_name'],
-                        'character_value': character['character_value'],
-                        'owned': character['owned'],
-                        'owner_id': character['owner_id']
-                    })
-
+        self.__load_user_db()
+        self.__load_character_db()
     @commands.command(name='register')
     async def register(self, ctx):
         """Adds the user to the database."""
@@ -128,13 +114,30 @@ class UserFunctions(commands.Cog):
         return list_of_char, total_value
 
     def get_available_characters(self):
+        self.__load_character_db()
         list_of_char = []
         for current_character in self.characters['characters']:
             if current_character['owned'] == False:
                 list_of_char.append(
                     f'Name:{current_character["character_name"]}')
         return list_of_char
-
+    def __load_character_db(self):
+        self.characters = {'characters': []}
+        with open('database/character_db.json') as fp:
+            data = json.load(fp)
+            for character in data['characters']:
+                self.characters['characters'].append(
+                    {
+                        'character_name': character['character_name'],
+                        'character_value': character['character_value'],
+                        'owned': character['owned'],
+                        'owner_id': character['owner_id']
+                    })
+    def __load_user_db(self):
+        with open('database/user_db.json') as fp:
+            data = json.load(fp)
+            for user in data:
+                self.users.append(user)
 
 def setup(bot):
     bot.add_cog(UserFunctions(bot))
