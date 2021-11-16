@@ -27,7 +27,7 @@ class UserFunctions(commands.Cog):
 
     @commands.command(name='register')
     async def register(self, ctx):
-        """Provides the user the Gatcha role"""
+        """Adds the user to the database."""
 
         # Checks if the user already has the specified role and is inside the user db
         if ctx.author.id in self.users:
@@ -38,7 +38,6 @@ class UserFunctions(commands.Cog):
         return self.__save_user_db()
 
     @commands.command(name='roll')
-    @commands.has_role('Gatcha')
     async def roll_dice(self, ctx):
         """This function gives a chance for the user to recieve a character."""
         available_characters = []
@@ -54,8 +53,7 @@ class UserFunctions(commands.Cog):
         return self.__save_character_db()
 
     @commands.command(name='discard')
-    @commands.has_role('Gatcha')
-    async def trade(self, ctx, character_name):
+    async def discard(self, ctx, character_name):
         """Lets the user trade with another user."""
         if self.__discard_character(ctx.author.id, character_name):
             return await ctx.channel.send(f'Character successfully discarded')
@@ -66,15 +64,27 @@ class UserFunctions(commands.Cog):
         """Usage: !info [Character name]"""
         result = self.get_character_info(character_name)
         await ctx.channel.send(f'{result}')
+
     @commands.command(name='collection')
-    async def info(self, ctx):
+    async def collection(self, ctx):
         """Lets the user see their character collection"""
-        characters_owned = self.get_player_characters(ctx.author.id)
+        characters_owned, total_points = self.get_player_characters(
+            ctx.author.id)
         characters_owned = ' '.join(characters_owned)
-        characters_owned = characters_owned.replace(' ','\n')
+        characters_owned = characters_owned.replace(' ', '\n')
         await ctx.channel.send(f'{characters_owned}')
+        await ctx.channel.send(f'{ctx.author.mention}, you have a total of {total_points} points!')
+
+    @commands.command(name='available')
+    async def available(self, ctx):
+        """Lets the user see what characters are available"""
+        available_characters = self.get_available_characters()
+        available_characters = ' '.join(available_characters)
+        available_characters = available_characters.replace(' ', '\n')
+        await ctx.channel.send(f'{available_characters}')
 
     def __save_user_db(self):
+        """Saves the user database"""
         with open('database/user_db.json', 'w') as fp:
             json.dump(self.users, fp)
 
@@ -106,11 +116,25 @@ class UserFunctions(commands.Cog):
                 if current_character['owned'] == True:
                     return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}\nOwned: {current_character["owned"]}```'
                 return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}\nOwned: {current_character["owned"]}```'
-    def get_player_characters(self,owner_id):
+
+    def get_player_characters(self, owner_id):
         list_of_char = []
+        total_value = 0
         for current_character in self.characters['characters']:
             if current_character['owner_id'] == owner_id:
-                list_of_char.append(current_character['character_name'])
+                total_value += current_character['character_value']
+                list_of_char.append(
+                    f'Name:{current_character["character_name"]},Value:{current_character["character_value"]}')
+        return list_of_char, total_value
+
+    def get_available_characters(self):
+        list_of_char = []
+        for current_character in self.characters['characters']:
+            if current_character['owned'] == False:
+                list_of_char.append(
+                    f'Name:{current_character["character_name"]}')
         return list_of_char
+
+
 def setup(bot):
     bot.add_cog(UserFunctions(bot))
