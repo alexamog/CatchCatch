@@ -5,6 +5,7 @@ from discord.ext import commands
 
 class AdminFunctions(commands.Cog):
     def __init__(self, bot):
+        """Loads all the characters and initializes the discord bot instance"""
         self.bot = bot
         self.users = []
         self.characters = {'characters': []}
@@ -28,20 +29,21 @@ class AdminFunctions(commands.Cog):
     async def create(self, ctx, name, value):
         """Creates a character. Usage: !create [Character name] [Value] """
         new_char = Character(name, value)
-        self.characters['characters'].append({ #CHANGE THIS LATER
-            "character_name": new_char.name,
-            "character_value": new_char.value,
-            "owned": new_char.owned,
-            "owner_id": ctx.author.id
-        })
-        self.write_to_char_db()
+        self.__add_character(new_char)
+        self.__save_character_db()
         await ctx.channel.send(f'Character name: {name} value: {value}')
 
-    def write_to_user_db(self):
-        with open('database/user_db.json', 'w') as fp:
-            json.dump(self.users, fp)
+    def __add_character(self, character):
+        """Adds a character into the database"""
+        self.characters['characters'].append({
+            "character_name": character.name,
+            "character_value": character.value,
+            "owned": character.owned,
+            "owner_id": "None"
+        })
 
-    def write_to_char_db(self):
+    def __save_character_db(self):
+        """Saves the character db"""
         with open('database/character_db.json', 'w') as fp:
             json.dump(self.characters, fp)
 

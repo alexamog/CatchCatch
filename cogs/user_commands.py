@@ -3,11 +3,9 @@ import discord
 import random
 from discord.ext import commands
 
-from models import characters
-
-
 class UserFunctions(commands.Cog):
     def __init__(self, bot):
+        """Loads all the databases and initializes the discord bot"""
         self.bot = bot
         self.users = []
         self.characters = {'characters': []}
@@ -40,7 +38,7 @@ class UserFunctions(commands.Cog):
         self.users.append(ctx.author.id)
         await ctx.author.add_roles(role)
         await ctx.channel.send(f'You have been added to the db and now have the {role} role!')
-        return self.write_to_user_db()
+        return self.__save_user_db()
 
     @commands.command(name='roll')
     @commands.has_role('Gatcha')
@@ -52,52 +50,56 @@ class UserFunctions(commands.Cog):
                 available_characters.append(characters)
         if len(available_characters) == 0:
             return await ctx.channel.send(f'It seems all characters have been claimed D:')
-        
+
         random_character = random.choice(available_characters)
-        for picked_char in self.characters['characters']:
-            if picked_char['character_name'] == random_character['character_name']:
-                print('FOUND')
-                picked_char['owned'] = True
-                picked_char['owner_id'] = ctx.author.id
-                self.write_to_char_db()
-        print(self.characters)
-        return await ctx.channel.send(f'{ctx.author.mention}, you got {random_character}!')
+        self.__add_character(ctx.author.id, random_character)
+        await ctx.channel.send(f'{ctx.author.mention}, you got {random_character}!')
+        return self.__save_character_db()
 
     @commands.command(name='discard')
     @commands.has_role('Gatcha')
     async def trade(self, ctx, character_name):
         """Lets the user trade with another user."""
-        if self.characters[character_name].owner == ctx.author:
-            self.characters[character_name].discard()
-            return await ctx.channel.send(f'{ctx.author.mention}, you have discarded {character_name} successfully.')
+        if self.__discard_character(ctx.author.id, character_name):
+            return await ctx.channel.send(f'Character successfully discarded')
         await ctx.channel.send(f'{ctx.author.mention}, it seems you do not own that character.')
-
-    @commands.command(name='scoreboard')
-    async def scoreboard(self, ctx):
-        """Displays all users who are enrolled followed by their points."""
-        for player in self.users:
-            points = 0
-            for characters in self.characters.keys():
-                if self.characters[characters].owner == player:
-                    points += self.characters[characters].value
-            await ctx.channel.send(f'Player: {player} Points: {points}')
 
     @commands.command(name='info')
     async def info(self, ctx, character_name):
         """Usage: !info [Character name]"""
-        if character_name not in self.characters.keys():
-            await ctx.channel.send(f'Character: {character_name} not in database.')
-        await ctx.channel.send(f'```Name: {self.characters[character_name].name}\nValue: {self.characters[character_name].value}\nOwned: {self.characters[character_name].owned} ```')
-        if discord.File(f'photo_db/{character_name.lower()}.jpg'):
-            await ctx.channel.send(file=discord.File(f'photo_db/{character_name.lower()}.jpg'))
+        result = self.get_character_info(character_name)
+        await ctx.channel.send(f'{result}')
 
-    def write_to_user_db(self):
+    def __save_user_db(self):
         with open('database/user_db.json', 'w') as fp:
             json.dump(self.users, fp)
 
-    def write_to_char_db(self):
+    def __add_character(self, user_id, selected_character):
+        for picked_char in self.characters['characters']:
+            if picked_char['character_name'] == selected_character['character_name']:
+                picked_char['owned'] = True
+                picked_char['owner_id'] = user_id
+                self.__save_character_db()
+
+    def __discard_character(self, user_id, character_name):
+        for character in self.characters['characters']:
+            if character['character_name'] == character_name and character['owner_id'] == user_id:
+                character['owned'] = False
+                character['owner_id'] = "None"
+                self.__save_character_db()
+                return True
+        return False
+
+    def __save_character_db(self):
         with open('database/character_db.json', 'w') as fp:
             json.dump(self.characters, fp)
+
+    def get_character_info(self, character_name):
+        for current_character in self.characters['characters']:
+            if current_character['character_name'] == character_name:
+                if current_character['owned'] == True:
+                    return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}\nOwned: {current_character["owned"]}```'
+                return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}```'
 
 
 def setup(bot):
