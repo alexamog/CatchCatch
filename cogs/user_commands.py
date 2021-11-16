@@ -66,6 +66,13 @@ class UserFunctions(commands.Cog):
         """Usage: !info [Character name]"""
         result = self.get_character_info(character_name)
         await ctx.channel.send(f'{result}')
+    @commands.command(name='collection')
+    async def info(self, ctx):
+        """Usage: !info [Character name]"""
+        characters_owned = self.get_player_characters(ctx.author.id)
+        characters_owned = ' '.join(characters_owned)
+        characters_owned = characters_owned.replace(' ','\n')
+        await ctx.channel.send(f'{characters_owned}')
 
     def __save_user_db(self):
         with open('database/user_db.json', 'w') as fp:
@@ -99,7 +106,11 @@ class UserFunctions(commands.Cog):
                 if current_character['owned'] == True:
                     return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}\nOwned: {current_character["owned"]}```'
                 return f'```Character name: {current_character["character_name"]}\nCharacter Value: {current_character["character_value"]}\nOwned: {current_character["owned"]}```'
-
-
+    def get_player_characters(self,owner_id):
+        list_of_char = []
+        for current_character in self.characters['characters']:
+            if current_character['owner_id'] == owner_id:
+                list_of_char.append(current_character['character_name'])
+        return list_of_char
 def setup(bot):
     bot.add_cog(UserFunctions(bot))
