@@ -11,6 +11,7 @@ class UserFunctions(commands.Cog):
         self.characters = {'characters': []}
         self.__load_user_db()
         self.__load_character_db()
+
     @commands.command(name='register')
     async def register(self, ctx):
         """Adds the user to the database."""
@@ -25,6 +26,8 @@ class UserFunctions(commands.Cog):
 
     @commands.command(name='roll')
     async def roll_dice(self, ctx):
+        """Lets the user roll for a chance of a character."""
+        self.__load_character_db()
         """This function gives a chance for the user to recieve a character."""
         available_characters = []
         for characters in self.characters['characters']:
@@ -54,6 +57,7 @@ class UserFunctions(commands.Cog):
     @commands.command(name='collection')
     async def collection(self, ctx):
         """Lets the user see their character collection"""
+        self.__load_character_db()
         characters_owned, total_points = self.get_player_characters(
             ctx.author.id)
         characters_owned = ' '.join(characters_owned)
@@ -64,6 +68,7 @@ class UserFunctions(commands.Cog):
     @commands.command(name='available')
     async def available(self, ctx):
         """Lets the user see what characters are available"""
+        self.__load_character_db()
         available_characters = self.get_available_characters()
         available_characters = ' '.join(available_characters)
         available_characters = available_characters.replace(' ', '\n')
@@ -121,6 +126,7 @@ class UserFunctions(commands.Cog):
                 list_of_char.append(
                     f'Name:{current_character["character_name"]}')
         return list_of_char
+
     def __load_character_db(self):
         self.characters = {'characters': []}
         with open('database/character_db.json') as fp:
@@ -133,11 +139,13 @@ class UserFunctions(commands.Cog):
                         'owned': character['owned'],
                         'owner_id': character['owner_id']
                     })
+
     def __load_user_db(self):
         with open('database/user_db.json') as fp:
             data = json.load(fp)
             for user in data:
                 self.users.append(user)
+
 
 def setup(bot):
     bot.add_cog(UserFunctions(bot))
