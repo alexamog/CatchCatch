@@ -67,7 +67,7 @@ class UserFunctions(commands.Cog):
 
     @commands.command(name='available')
     async def available(self, ctx):
-        """Lets the user see what characters are available"""
+        """Lets the user see what characters are availble"""
         self.__load_character_db()
         available_characters = self.get_available_characters()
         available_characters = ' '.join(available_characters)
