@@ -68,7 +68,7 @@ class UserFunctions(commands.Cog):
         await ctx.channel.send(f'{result}')
     @commands.command(name='collection')
     async def info(self, ctx):
-        """Usage: !info [Character name]"""
+        """Lets the user see their character collection"""
         characters_owned = self.get_player_characters(ctx.author.id)
         characters_owned = ' '.join(characters_owned)
         characters_owned = characters_owned.replace(' ','\n')
