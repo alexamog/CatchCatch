@@ -1,1 +1,13 @@
-{"characters": [{"character_name": "Josh", "character_value": 10, "owned": true, "owner_id": 204372755343343617}, {"character_name": "James-kun", "character_value": 10, "owned": true, "owner_id": 165897917004120064}, {"character_name": "Josh_simp", "character_value": 100, "owned": false, "owner_id": "None"}, {"character_name": "Franklin-kun", "character_value": 20, "owned": false, "owner_id": "None"}, {"character_name": "Franklina", "character_value": 100, "owned": true, "owner_id": 165897917004120064}, {"character_name": "Olivia", "character_value": 2000, "owned": false, "owner_id": "None"}, {"character_name": "pogchamp", "character_value": 10, "owned": true, "owner_id": 204372755343343617}]}
+{"characters": [
+    {"character_name": "Josh", "character_value": 10, "owned": true, "owner_id": 204372755343343617}, 
+    {"character_name": "James-kun", "character_value": 10, "owned": true, "owner_id": 165897917004120064},
+     {"character_name": "Josh_simp", "character_value": 100, "owned": false, "owner_id": "None"}, 
+     {"character_name": "Franklin-kun", "character_value": 20, "owned": false, "owner_id": "None"}, 
+     {"character_name": "Franklina", "character_value": 100, "owned": true, "owner_id": 165897917004120064}, 
+     {"character_name": "Olivia", "character_value": 2000, "owned": false, "owner_id": "None"}, 
+     {"character_name": "pogchamp", "character_value": 10, "owned": true, "owner_id": 204372755343343617},
+     {"character_name": "C0-Tartaglia", "character_value": 20, "owned": false, "owner_id": "None"}, 
+     {"character_name": "C1-Bennet", "character_value": 20, "owned": false, "owner_id": "None"}, 
+     {"character_name": "James-farts", "character_value": 20, "owned": false, "owner_id": "None"}, 
+     {"character_name": "James-chan", "character_value": 20, "owned": false, "owner_id": "None"}
+     ]}
