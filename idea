@@ -16,7 +16,7 @@ Purpose: The purpose of this project is to let users in a server have a gatcha g
 
 - There will be a leaderboards list for the users to see who has the most points. It will also display the characters that they own. (Via flask).
 
-
+Rules: 
 - A user will have to type !roll for a chance to roll a character
 - If a character has already been rolled by a user, they are no longer able to be rolled for.
 - 
