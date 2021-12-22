@@ -1,5 +1,5 @@
 ﻿<h1>Discord Gacha Bot</h1>
- <h2>What it is</h2>
+ <h2>Introduction</h2>
  <p>This application is a asynchronous discord bot with the intentions to allow discord users roll a virtual number to have a chance to win characters based on rarity.</p>
 
 <h2>Getting started</h2>
