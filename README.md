@@ -1,8 +1,7 @@
-﻿<h1>Gacha Discord Bot for ACIT2515</h1>
+﻿<h1>Gacha Discord Bot</h1>
  <h2>What it is</h2>
- <p>This application is a asynchronous discord bot that lets users in a discord server interact with via commands.</p>
- 
- 
+ <p>This application is a asynchronous discord bot with the intentions to allow discord users roll a virtual number to have a chance to win characters based on rarity.</p>
+
 <h2>Getting started</h2>
 
 <h3>Creating a Discord API </h3>
