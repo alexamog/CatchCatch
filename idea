@@ -1,4 +1,4 @@
-Gatcha Game
+Gatcha Game hi alex
 
 Purpose: The purpose of this project is to let users in a server have a gatcha game where they can collect and trade characters.
 
@@ -9,6 +9,7 @@ Purpose: The purpose of this project is to let users in a server have a gatcha g
     - Worth (int)
     - Image of the character (string)
     - Is owned (boolean)
+
 
 
 - All characters will be stored in a mockup database
