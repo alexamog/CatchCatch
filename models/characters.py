@@ -13,13 +13,14 @@ class Character:
         return self._owners
 
     def owned(self):
-        discord.User.id in owners(self)
+        discord.User.id in self._owners
 
     def discard(self):
         uid = discord.User.id
-        ownlist = owners(self)
+        ownlist = self._owners
+        owntimes = self.times_owned
         if uid not in ownlist:
             print('You do not own this character.')
         else:
-             self._owners = remove(ownlist[index(uid)])
-             self.times_owned = remove(self.times_owned[index(uid)])
+             self._owners = ownlist.remove(ownlist[ownlist.index(uid)])
+             self.times_owned = owntimes.remove(owntimes[owntimes.index(uid)])
