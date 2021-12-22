@@ -7,7 +7,7 @@
 <h3>Creating a Discord API </h3>
 <ol>
  <li>Sign in with your Discord credentials on <a href="https://discord.com">Discord</a> </li>
- <li>Go to the Discord <a href=https://discord.com/developers/applications">API page </a></li>
+ <li>Go to the Discord <a href=https://discord.com/developers/applications>API page </a></li>
   <li> Click on new application and provide a name for your API </li>
   <li>Click on "Bot" on the left sidebar and create a bot</li>
   <li>Click "copy" under the Token section and add it to the .env file provided</li>
