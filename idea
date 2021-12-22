@@ -21,14 +21,15 @@ Probabilities:
     - semi is 5%
     - common is 94%
 
-
 - All characters will be stored in a mockup database
     - If the character is owned, the owner's discord id will be added to the character's owner list attribute
 
 - There will be a leaderboards list for the users to see who has the most points. It will also display the characters that they own. (Via flask).
 
 Rules: 
-- A user will have to type !roll for a chance to roll a character
+- A user will have to type !roll for a chance to roll a character in a certain banner
+- if after 5 pulls the character has not obtained a semi rare character, they will be guaranteed a either a semi rare or rare character (1% to 99%)
+- after 50 pulls without a rare character, the chances for a rare character will increase by 5% every pull, until the rare character gets pulled.
 
 Functionality:
  - Users will be able to trade (!trade)
