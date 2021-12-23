@@ -136,8 +136,8 @@ class UserFunctions(commands.Cog):
                     {
                         'character_name': character['character_name'],
                         'character_value': character['character_value'],
-                        'owned': character['owned'],
-                        'owner_id': character['owner_id']
+                        'owners': character['owners'],
+                        'times_owned': character['times_owned']
                     })
 
     def __load_user_db(self):
