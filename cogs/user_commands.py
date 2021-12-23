@@ -9,6 +9,7 @@ class UserFunctions(commands.Cog):
         self.bot = bot
         self.users = []
         self.characters = {'characters': []}
+        self.banners = []
         self.__load_user_db()
         self.__load_character_db()
 
@@ -20,13 +21,19 @@ class UserFunctions(commands.Cog):
         if ctx.author.id in self.users:
             return await ctx.channel.send(f'You are already in the db.')
 
-        self.users.append(ctx.author.id)
+        self.users.append({'userid': ctx.author.id, 'pcount': 0})
         await ctx.channel.send(f'You have been added to the db')
         return self.__save_user_db()
 
     @commands.command(name='roll')
     async def roll_dice(self, ctx):
-        """Lets the user roll for a chance of a character."""
+        """
+        Lets the user roll for a chance of a character.
+        
+        This method:
+        (1) chooses whether the user will get a rare, semi, or common character in the banner.
+        (2) will either add the user itself, or increase times_owned by 1 depending if it is owned.
+        """
         self.__load_character_db()
         """This function gives a chance for the user to recieve a character."""
         available_characters = []
@@ -65,22 +72,25 @@ class UserFunctions(commands.Cog):
         await ctx.channel.send(f'{characters_owned}')
         await ctx.channel.send(f'{ctx.author.mention}, you have a total of {total_points} points!')
 
-    @commands.command(name='available')
-    async def available(self, ctx):
-        """Lets the user see what characters are availble"""
-        self.__load_character_db()
-        available_characters = self.get_available_characters()
-        available_characters = ' '.join(available_characters)
-        available_characters = available_characters.replace(' ', '\n')
-        await ctx.channel.send(f'{available_characters}')
+    # @commands.command(name='available')
+    # async def available(self, ctx):
+    #     """Lets the user see what characters are availble"""
+    #     self.__load_character_db()
+    #     available_characters = self.get_available_characters()
+    #     available_characters = ' '.join(available_characters)
+    #     available_characters = available_characters.replace(' ', '\n')
+    #     await ctx.channel.send(f'{available_characters}')
+    #
+    # commented out due to being obsolete
 
     def __save_user_db(self):
         """Saves the user database"""
+
         with open('database/user_db.json', 'w') as fp:
             json.dump(self.users, fp)
 
     def __add_character(self, user_id, selected_character):
-        """Changes the character's attributes to make them be own by the user"""
+        """Changes the character's attributes to make them be owned by the user"""
         for picked_char in self.characters['characters']:
             if picked_char['character_name'] == selected_character['character_name']:
                 picked_char['owned'] = True
