@@ -1,5 +1,5 @@
 import json
-from models import Character
+from models import Character, sql_commands
 from discord.ext import commands
 
 
@@ -32,7 +32,8 @@ class AdminFunctions(commands.Cog):
         new_char = Character(name, value)
         if name.isalpha() == False or value.isnumeric() == False:
             return await ctx.channel.send(f'Invalid input.')
-        self.__add_character(new_char)
+        sql_commands.add_chracter(new_char)
+        # self.__add_character(new_char)
         await ctx.channel.send(f'Character name: {name} value: {value}')
 
     def __add_character(self, character):
