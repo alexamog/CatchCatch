@@ -9,9 +9,10 @@ class UserFunctions(commands.Cog):
         self.bot = bot
         self.users = []
         self.characters = {'characters': []}
-        self.banners = []
+        self.banners = {'banners' : []}
         self.__load_user_db()
         self.__load_character_db()
+        self.__load_banner_db()
 
     @commands.command(name='register')
     async def register(self, ctx):
@@ -34,7 +35,15 @@ class UserFunctions(commands.Cog):
         (1) chooses whether the user will get a rare, semi, or common character in the banner.
         (2) will either add the user itself, or increase times_owned by 1 depending if it is owned.
         """
-        bannername = self.bannername
+        self.bannername = bannername
+
+        self.__load_banner_db()
+        selected_banner = self.lookup_banner(bannername)
+
+        random_cat  =  random.choices(selected_banner, weights = selected_banner['chances'])
+
+
+
 
         # self.__load_character_db()
         # """This function gives a chance for the user to recieve a character."""
@@ -130,26 +139,27 @@ class UserFunctions(commands.Cog):
                     f'Name:{current_character["character_name"]},Value:{current_character["character_value"]}')
         return list_of_char, total_value
 
-    def get_available_characters(self):
-        self.__load_character_db()
-        list_of_char = []
-        for current_character in self.characters['characters']:
-            if current_character['owned'] == False:
-                list_of_char.append(
-                    f'Name:{current_character["character_name"]}')
-        return list_of_char
+    # def get_available_characters(self):
+    #     self.__load_character_db()
+    #     list_of_char = []
+    #     for current_character in self.characters['characters']:
+    #         if current_character['owned'] == False:
+    #             list_of_char.append(
+    #                 f'Name:{current_character["character_name"]}')
+    #     return list_of_char
 
     def __load_character_db(self):
-        self.characters = {'characters': []}
+        self.characters = []
         with open('database/character_db.json') as fp:
             data = json.load(fp)
             for character in data['characters']:
                 self.characters['characters'].append(
                     {
-                        'character_name': character['character_name'],
-                        'character_value': character['character_value'],
+                        'character_name': character['name'],
+                        'character_value': character['value'],
                         'owners': character['owners'],
                         'times_owned': character['times_owned']
+
                     })
 
     def __load_banner_db(self):
@@ -157,13 +167,39 @@ class UserFunctions(commands.Cog):
         with open('database/banner_db.json') as fp:
             data = json.load(fp)
             for banner in data['banners']:
-                self.banners['banners'].append([])
+                self.banners['banners'].append(
+                {
+
+                    'banner_name' : banner['name'],
+                    'banner_rare' : banner['rare'],
+                    'banner_semi' : banner['semi'],
+                    'banner_com'  : banner['com']
+
+                })
+
 
     def __load_user_db(self):
         with open('database/user_db.json') as fp:
             data = json.load(fp)
             for user in data:
                 self.users.append(user)
+
+    def lookup_banner(self, banner_name):
+        """
+        (String -> Banner)
+
+        searches for the banner of the same name;
+        loads the characters in it
+        """
+
+        for banner in self.banners:
+            if banner_name == banner['name']:
+                return [
+                    banner['rare'],
+                    banner['semi'],
+                    banner['com']
+                        ]
+        return None
 
 
 def setup(bot):
