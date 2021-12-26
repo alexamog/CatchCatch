@@ -30,13 +30,3 @@ def get_list(discord_user_id="None"):
     c.execute("SELECT * FROM characters WHERE char_owner= ?",(discord_user_id,))
     test = c.fetchall()
     print(test)
-
-def leaderboards():
-    """
-    Provides a leaderboards based off score.
-    """
-    pass
-
-# add_chracter('kekw',10)
-# remove_character('Franklina')
-get_list(165897917004120064)
