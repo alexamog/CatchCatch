@@ -5,13 +5,14 @@
 #   - list of common characters
 
 class Banner:
-    def __init__(self, rare, semi, com):
+    def __init__(self, name, rare, semi, com):
         """
         (self. listof Character, listof Character, listof Character)
 
         rare, semi, and com correspond to
         rare, semi rare, and common characters.
         """
+        self.name = name
         self.rare = rare
         self.semi = semi
         self.com = com
