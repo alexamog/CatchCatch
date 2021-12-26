@@ -26,7 +26,7 @@ class UserFunctions(commands.Cog):
         return self.__save_user_db()
 
     @commands.command(name='roll')
-    async def roll_dice(self, ctx):
+    async def roll_dice(self, ctx, bannername):
         """
         Lets the user roll for a chance of a character.
         
@@ -34,19 +34,21 @@ class UserFunctions(commands.Cog):
         (1) chooses whether the user will get a rare, semi, or common character in the banner.
         (2) will either add the user itself, or increase times_owned by 1 depending if it is owned.
         """
-        self.__load_character_db()
-        """This function gives a chance for the user to recieve a character."""
-        available_characters = []
-        for characters in self.characters['characters']:
-            if characters['owned'] == False:
-                available_characters.append(characters)
-        if len(available_characters) == 0:
-            return await ctx.channel.send(f'It seems all characters have been claimed D:')
+        bannername = self.bannername
 
-        random_character = random.choice(available_characters)
-        self.__add_character(ctx.author.id, random_character)
-        await ctx.channel.send(f'{ctx.author.mention}, you got {random_character["character_name"]} with a value of {random_character["character_value"]}!')
-        return self.__save_character_db()
+        # self.__load_character_db()
+        # """This function gives a chance for the user to recieve a character."""
+        # banner_chars = []
+        # for characters in self.characters['characters']:
+        #     if characters['owned'] == False:
+        #         available_characters.append(characters)
+        # if len(available_characters) == 0:
+        #     return await ctx.channel.send(f'It seems all characters have been claimed D:')
+
+        # random_character = random.choice(available_characters)
+        # self.__add_character(ctx.author.id, random_character)
+        # await ctx.channel.send(f'{ctx.author.mention}, you got {random_character["character_name"]} with a value of {random_character["character_value"]}!')
+        # return self.__save_character_db()
 
     @commands.command(name='discard')
     async def discard(self, ctx, character_name):
@@ -149,6 +151,13 @@ class UserFunctions(commands.Cog):
                         'owners': character['owners'],
                         'times_owned': character['times_owned']
                     })
+
+    def __load_banner_db(self):
+        self.banners = []
+        with open('database/banner_db.json') as fp:
+            data = json.load(fp)
+            for banner in data['banners']:
+                self.banners['banners'].append([])
 
     def __load_user_db(self):
         with open('database/user_db.json') as fp:
