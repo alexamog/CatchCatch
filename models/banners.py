@@ -7,7 +7,7 @@
 class Banner:
     def __init__(self, rare, semi, com):
         """
-        (self. listof Character, listofCharacter, listofCharacter)
+        (self. listof Character, listof Character, listof Character)
 
         rare, semi, and com correspond to
         rare, semi rare, and common characters.
