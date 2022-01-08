@@ -13,7 +13,7 @@
   <li>Click "copy" under the Token section and add it to the .env file provided</li>
  </ol>
   
-  <h3>Adding the Discord Bot into your server</h3>
+  <h3>Adding the CatchCatch into your server</h3>
   <p>Click on this link and replace "CLIENT_ID_HERE" with your bot's client ID.</p>
   https://discord.com/oauth2/authorize?client_id=CLIENT_ID_HERE&permissions=2048&scope=bot%20applications.commands
 
