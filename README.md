@@ -1,10 +1,10 @@
-﻿<h1>CatchCatch</h1>
- <h2>Introduction</h2>
- <p>CatchCatch is a asynchronous discord bot with the intentions to allow discord users roll a virtual number to have a chance to win characters based on rarity.</p>
+#CatchCatch
+##Introduction
+CatchCatch is a bot that operates on Discord's platform and utilizes an asynchronous design to enable smooth and efficient user interactions. The primary function of the bot is to facilitate virtual number rolls, which give users a chance to win rare characters in the context of the game or activity that the bot is being used for. The rarity of the characters available for winning is predetermined and varies based on the specific game or activity that the bot is being used for.
 
-<h2>Getting started</h2>
+#Getting started
 
-<h3>Creating a Discord API </h3>
+##Creating a Discord API
 <ol>
  <li>Sign in with your Discord credentials on <a href="https://discord.com">Discord</a> </li>
  <li>Go to the Discord <a href=https://discord.com/developers/applications>API page </a></li>
@@ -13,14 +13,14 @@
   <li>Click "copy" under the Token section and add it to the .env file provided</li>
  </ol>
   
-  <h3>Adding the CatchCatch into your server</h3>
-  <p>Click on this link and replace "CLIENT_ID_HERE" with your bot's client ID.</p>
+  ###Adding the CatchCatch into your server</h3>
+  Click on this link and replace "CLIENT_ID_HERE" with your bot's client ID.
   https://discord.com/oauth2/authorize?client_id=CLIENT_ID_HERE&permissions=2048&scope=bot%20applications.commands
 
 
-<h3>Installing dependencies </h3>
+###Installing dependencies
 <ul>
   <li>Type in: "pip install -r requirements.txt" to install dependencies</li>
   </ul>
  
-  <p>Once you have done all the steps above, in your terminal, you can now run the bot by typing in the command: python app.py</p>
+  Once you have done all the steps above, in your terminal, you can now run the bot by typing in the command: python app.py
