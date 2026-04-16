@@ -13,7 +13,6 @@ Commands
 """
 
 from discord.ext import commands
-from models import Character
 from database import db
 
 
@@ -47,14 +46,10 @@ class AdminFunctions(commands.Cog):
             return await ctx.channel.send('Character name must contain only letters.')
         if not value.isnumeric():
             return await ctx.channel.send('Character value must be a positive number.')
-
-        data = db.load_characters()
-        if any(c['character_name'] == name for c in data['characters']):
+        if db.character_exists(name):
             return await ctx.channel.send(f'A character named **{name}** already exists.')
 
-        char = Character(name, int(value))
-        data['characters'].append(char.to_dict())
-        db.save_characters(data)
+        db.create_character(name, int(value))
         await ctx.channel.send(f'Created character **{name}** with value **{value}**.')
 
     @create.error

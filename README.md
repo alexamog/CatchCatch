@@ -17,9 +17,8 @@ CatchCatch/
 ├── models/
 │   └── characters.py       Character data model
 └── database/
-    ├── db.py               Shared data-access layer
-    ├── character_db.json   Character state (auto-managed)
-    └── user_db.json        Registered players (auto-managed)
+    ├── db.py               SQLite data-access layer
+    └── catchcatch.db       SQLite database (auto-created, not committed)
 ```
 
 ---

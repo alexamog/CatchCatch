@@ -64,11 +64,9 @@ class UserFunctions(commands.Cog):
         and other commands. Safe to call multiple times — duplicate
         registrations are ignored with a friendly message.
         """
-        users = db.load_users()
-        if ctx.author.id in users:
+        if db.is_registered(ctx.author.id):
             return await ctx.channel.send('You are already registered.')
-        users.append(ctx.author.id)
-        db.save_users(users)
+        db.register_user(ctx.author.id)
         await ctx.channel.send('You have been registered!')
 
     @commands.command(name='roll')
@@ -79,21 +77,17 @@ class UserFunctions(commands.Cog):
         you. Requires prior registration via !register. If no characters
         remain in the pool, a message is displayed instead.
         """
-        users = db.load_users()
-        if ctx.author.id not in users:
+        if not db.is_registered(ctx.author.id):
             return await ctx.channel.send('You need to register first with `!register`.')
 
-        data = db.load_characters()
-        available = [c for c in data['characters'] if not c['owned']]
+        available = db.get_available_characters()
         if not available:
             return await ctx.channel.send('All characters have been claimed!')
 
         picked = random.choice(available)
-        picked['owned'] = True
-        picked['owner_id'] = ctx.author.id
-        db.save_characters(data)
+        db.claim_character(picked['name'], ctx.author.id)
         await ctx.channel.send(
-            f'{ctx.author.mention} rolled **{picked["character_name"]}** (value: {picked["character_value"]})!'
+            f'{ctx.author.mention} rolled **{picked["name"]}** (value: {picked["value"]})!'
         )
 
     @commands.command(name='discard')
@@ -105,14 +99,10 @@ class UserFunctions(commands.Cog):
         Args:
             character_name: Exact name of the character to discard.
         """
-        data = db.load_characters()
-        for char in data['characters']:
-            if char['character_name'] == character_name and char['owner_id'] == ctx.author.id:
-                char['owned'] = False
-                char['owner_id'] = None
-                db.save_characters(data)
-                return await ctx.channel.send(f'**{character_name}** has been returned to the pool.')
-        await ctx.channel.send(f'You do not own a character named **{character_name}**.')
+        if db.discard_character(character_name, ctx.author.id):
+            await ctx.channel.send(f'**{character_name}** has been returned to the pool.')
+        else:
+            await ctx.channel.send(f'You do not own a character named **{character_name}**.')
 
     @commands.command(name='info')
     async def info(self, ctx, character_name: str):
@@ -126,14 +116,13 @@ class UserFunctions(commands.Cog):
         Args:
             character_name: Exact name of the character to look up.
         """
-        data = db.load_characters()
-        for char in data['characters']:
-            if char['character_name'] == character_name:
-                status = f'Owned by <@{char["owner_id"]}>' if char['owned'] else 'Available'
-                return await ctx.channel.send(
-                    f'```\nName:   {char["character_name"]}\nValue:  {char["character_value"]}\nStatus: {status}\n```'
-                )
-        await ctx.channel.send(f'No character named **{character_name}** found.')
+        char = db.get_character(character_name)
+        if not char:
+            return await ctx.channel.send(f'No character named **{character_name}** found.')
+        status = f'Owned by <@{char["owner_id"]}>' if char['owned'] else 'Available'
+        await ctx.channel.send(
+            f'```\nName:   {char["name"]}\nValue:  {char["value"]}\nStatus: {status}\n```'
+        )
 
     @commands.command(name='collection')
     async def collection(self, ctx):
@@ -143,20 +132,14 @@ class UserFunctions(commands.Cog):
         then shows your cumulative score. Output is paginated automatically
         if your collection would exceed Discord's message length limit.
         """
-        data = db.load_characters()
-        owned = [
-            f'Name: {c["character_name"]}, Value: {c["character_value"]}'
-            for c in data['characters']
-            if c['owner_id'] == ctx.author.id
-        ]
+        owned = db.get_player_characters(ctx.author.id)
         if not owned:
             return await ctx.channel.send(
                 f'{ctx.author.mention}, you have no characters yet. Try `!roll`!'
             )
-        total = sum(
-            c['character_value'] for c in data['characters'] if c['owner_id'] == ctx.author.id
-        )
-        for page in _paginate(owned):
+        lines = [f'Name: {c["name"]}, Value: {c["value"]}' for c in owned]
+        total = sum(c['value'] for c in owned)
+        for page in _paginate(lines):
             await ctx.channel.send(f'```\n{page}\n```')
         await ctx.channel.send(f'{ctx.author.mention}, total points: **{total}**')
 
@@ -167,15 +150,11 @@ class UserFunctions(commands.Cog):
         Output is paginated automatically if the list would exceed
         Discord's message length limit.
         """
-        data = db.load_characters()
-        avail = [
-            f'Name: {c["character_name"]}, Value: {c["character_value"]}'
-            for c in data['characters']
-            if not c['owned']
-        ]
+        avail = db.get_available_characters()
         if not avail:
             return await ctx.channel.send('All characters have been claimed!')
-        for page in _paginate(avail):
+        lines = [f'Name: {c["name"]}, Value: {c["value"]}' for c in avail]
+        for page in _paginate(lines):
             await ctx.channel.send(f'```\n{page}\n```')
 
 

@@ -3,18 +3,21 @@ app.py
 ------
 Entry point for the CatchCatch Discord bot.
 
-Loads all cogs from the cogs/ directory automatically on startup, then
-starts the bot using the token stored in the DISCORD_TOKEN environment
-variable (read from .env).
+Initialises the SQLite database, loads all cogs from the cogs/ directory
+automatically on startup, then starts the bot using the token stored in
+the DISCORD_TOKEN environment variable (read from .env).
 """
 
 import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from database import db
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+
+db.init_db()
 
 bot = commands.Bot(command_prefix='!')
 
