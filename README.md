@@ -1,26 +1,103 @@
 # CatchCatch
-## Introduction
-CatchCatch is a bot that operates on Discord's platform and utilizes an asynchronous design to enable smooth and efficient user interactions. The primary function of the bot is to facilitate virtual number rolls, which give users a chance to win rare characters in the context of the game or activity that the bot is being used for. The rarity of the characters available for winning is predetermined and varies based on the specific game or activity that the bot is being used for.
 
-# Getting started
+CatchCatch is a Discord gacha bot where players roll to collect virtual characters, build a collection, and compete for the highest point total. Characters are added by admins and drawn randomly from a shared pool.
 
-## Creating a Discord API
-<ol>
- <li>Sign in with your Discord credentials on <a href="https://discord.com">Discord</a> </li>
- <li>Go to the Discord <a href=https://discord.com/developers/applications>API page </a></li>
-  <li> Click on new application and provide a name for your API </li>
-  <li>Click on "Bot" on the left sidebar and create a bot</li>
-  <li>Click "copy" under the Token section and add it to the .env file provided</li>
- </ol>
-  
-  ### Adding the CatchCatch into your server</h3>
-  Click on this link and replace "CLIENT_ID_HERE" with your bot's client ID.
-  https://discord.com/oauth2/authorize?client_id=CLIENT_ID_HERE&permissions=2048&scope=bot%20applications.commands
+---
 
+## Project structure
 
-### Installing dependencies
-<ul>
-  <li>Type in: "pip install -r requirements.txt" to install dependencies</li>
-  </ul>
- 
-  Once you have done all the steps above, in your terminal, you can now run the bot by typing in the command: python app.py
+```
+CatchCatch/
+├── app.py                  Entry point — starts the bot
+├── requirements.txt        Python dependencies
+├── .env                    Bot token (not committed)
+├── cogs/
+│   ├── user_commands.py    Player-facing commands
+│   └── admin_commands.py   Admin-only commands
+├── models/
+│   └── characters.py       Character data model
+└── database/
+    ├── db.py               Shared data-access layer
+    ├── character_db.json   Character state (auto-managed)
+    └── user_db.json        Registered players (auto-managed)
+```
+
+---
+
+## Setup
+
+### 1. Create a Discord bot
+
+1. Sign in at [discord.com](https://discord.com)
+2. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
+3. Click **New Application** and give it a name
+4. Go to the **Bot** tab and click **Add Bot**
+5. Under the **Token** section, click **Copy**
+
+### 2. Configure the token
+
+Paste your token into the `.env` file:
+
+```
+DISCORD_TOKEN=your_token_here
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Invite the bot to your server
+
+Replace `CLIENT_ID_HERE` with your bot's application ID:
+
+```
+https://discord.com/oauth2/authorize?client_id=CLIENT_ID_HERE&permissions=2048&scope=bot%20applications.commands
+```
+
+### 5. Run the bot
+
+```bash
+python app.py
+```
+
+---
+
+## Commands
+
+### Player commands
+
+| Command | Description |
+|---|---|
+| `!register` | Register your account to start playing |
+| `!roll` | Roll for a random available character |
+| `!discard [name]` | Return a character you own back to the pool |
+| `!info [name]` | Look up a character's value and ownership status |
+| `!collection` | View your characters and total points |
+| `!available` | List all unclaimed characters |
+| `!slap [@user]` | Slap another server member (easter egg) |
+
+### Admin commands
+
+These commands require the **Admin** role in your Discord server.
+
+| Command | Description |
+|---|---|
+| `!create [name] [value]` | Add a new character to the gacha pool |
+
+### Bot owner commands
+
+| Command | Description |
+|---|---|
+| `!load [cog]` | Load a cog at runtime |
+| `!unload [cog]` | Unload a cog at runtime |
+
+---
+
+## Notes
+
+- Character names must contain only letters.
+- Character values must be positive integers.
+- Players must `!register` before they can `!roll`.
+- If a character name already exists, `!create` will reject the duplicate.

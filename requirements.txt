@@ -1,4 +1,2 @@
 discord.py
 python-dotenv
-flask
-pysqlite3

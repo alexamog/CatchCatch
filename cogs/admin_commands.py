@@ -1,55 +1,78 @@
-import json
-from models import Character
+"""
+cogs/admin_commands.py
+----------------------
+Admin-only commands for CatchCatch.
+
+All commands in this cog require the invoking user to have the 'Admin'
+role in the Discord server. Unauthorised attempts are caught by the error
+handler and returned as a friendly message.
+
+Commands
+--------
+!create — Add a new character to the gacha pool.
+"""
+
 from discord.ext import commands
+from models import Character
+from database import db
 
 
 class AdminFunctions(commands.Cog):
-    def __init__(self, bot):
-        """Loads all the characters and initializes the discord bot instance"""
-        self.bot = bot
-        self.users = []
-        self.characters = {'characters': []}
-        with open('database/user_db.json') as fp:
-            data = json.load(fp)
-            for user in data:
-                self.users.append(user)
+    """Cog containing admin-only bot commands."""
 
-        with open('database/character_db.json') as fp:
-            data = json.load(fp)
-            for character in data['characters']:
-                self.characters['characters'].append(
-                    {
-                        'character_name': character['character_name'],
-                        'character_value': character['character_value'],
-                        'owned': character['owned'],
-                        'owner_id': character['owner_id']
-                    })
+    def __init__(self, bot):
+        """Initialise the cog with a reference to the bot instance.
+
+        Args:
+            bot: The running discord.ext.commands.Bot instance.
+        """
+        self.bot = bot
 
     @commands.command(name='create')
-    # @commands.has_role('Admin')
-    async def create(self, ctx, name, value):
-        """Creates a character. Usage: !create [Character name] [Value] """
-        new_char = Character(name, value)
-        if name.isalpha() == False or value.isnumeric() == False:
-            return await ctx.channel.send(f'Invalid input.')
-        self.__add_character(new_char)
-        await ctx.channel.send(f'Character name: {name} value: {value}')
+    @commands.has_role('Admin')
+    async def create(self, ctx, name: str, value: str):
+        """Add a new character to the gacha pool.
 
-    def __add_character(self, character):
-        """Adds a character into the database"""
-        self.characters['characters'].append({
-            "character_name": character.name,
-            "character_value": character.value,
-            "owned": character.owned,
-            "owner_id": "None"
-        })
-        self.__save_character_db()
+        Usage: !create [name] [value]
 
-    def __save_character_db(self):
-        """Saves the character db"""
-        with open('database/character_db.json', 'w') as fp:
-            json.dump(self.characters, fp)
+        The name must contain only letters and the value must be a
+        positive integer. Duplicate names are rejected. Requires the
+        'Admin' role.
+
+        Args:
+            name: Display name for the new character (letters only).
+            value: Point value for the new character (positive integer).
+        """
+        if not name.isalpha():
+            return await ctx.channel.send('Character name must contain only letters.')
+        if not value.isnumeric():
+            return await ctx.channel.send('Character value must be a positive number.')
+
+        data = db.load_characters()
+        if any(c['character_name'] == name for c in data['characters']):
+            return await ctx.channel.send(f'A character named **{name}** already exists.')
+
+        char = Character(name, int(value))
+        data['characters'].append(char.to_dict())
+        db.save_characters(data)
+        await ctx.channel.send(f'Created character **{name}** with value **{value}**.')
+
+    @create.error
+    async def create_error(self, ctx, error):
+        """Handle errors raised by the !create command.
+
+        Catches missing-role errors and replies with a clear message.
+        All other errors are re-raised for the global error handler.
+
+        Args:
+            error: The exception raised during command execution.
+        """
+        if isinstance(error, commands.MissingRole):
+            await ctx.channel.send('You need the Admin role to use this command.')
+        else:
+            raise error
 
 
 def setup(bot):
+    """Register the AdminFunctions cog with the bot."""
     bot.add_cog(AdminFunctions(bot))

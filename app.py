@@ -1,33 +1,58 @@
+"""
+app.py
+------
+Entry point for the CatchCatch Discord bot.
+
+Loads all cogs from the cogs/ directory automatically on startup, then
+starts the bot using the token stored in the DISCORD_TOKEN environment
+variable (read from .env).
+"""
+
 import os
 import discord
-from dotenv import load_dotenv
 from discord.ext import commands
-from discord.utils import get
+from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-client = discord.Client()
+
 bot = commands.Bot(command_prefix='!')
+
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        bot.load_extension(f'cogs.{filename[:-3]}')
 
 
 @bot.command()
-async def load(ctx, extension):  # This loads all the extensions
+@commands.is_owner()
+async def load(ctx, extension):
+    """Load a cog by name. Bot owner only.
+
+    Usage: !load [cog name]
+    """
     bot.load_extension(f'cogs.{extension}')
 
 
 @bot.command()
-async def unload(ctx, extension):  # This unpacks/unloads the extensions
-    bot.unload_extension(f'cogs.{extension}')
+@commands.is_owner()
+async def unload(ctx, extension):
+    """Unload a cog by name. Bot owner only.
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        # We take out the last 3 characters (.py) since we already specify files that end with .py
-        bot.load_extension(f'cogs.{filename[:-3]}')
+    Usage: !unload [cog name]
+    """
+    bot.unload_extension(f'cogs.{extension}')
 
 
 @bot.command(name='slap')
-async def trade(ctx, target: discord.Member):
-    """EASTER EGG | Slap a user"""
+async def slap(ctx, target: discord.Member):
+    """EASTER EGG — Slap another server member.
+
+    Usage: !slap [@user]
+
+    Args:
+        target: The Discord member to slap.
+    """
     await ctx.channel.send(f'{ctx.author.mention} slapped {target.mention}!')
+
 
 bot.run(TOKEN)
