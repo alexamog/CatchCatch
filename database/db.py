@@ -45,7 +45,8 @@ def init_db() -> None:
     """Create the database tables if they do not already exist.
 
     Safe to call on every startup — uses ``CREATE TABLE IF NOT EXISTS``
-    so existing data is never affected.
+    so existing data is never affected. Also applies any lightweight
+    migrations (e.g. adding new columns) that are safe to run repeatedly.
     """
     with _connect() as conn:
         conn.executescript("""
@@ -58,9 +59,76 @@ def init_db() -> None:
                 name      TEXT    UNIQUE NOT NULL,
                 value     INTEGER NOT NULL,
                 owned     INTEGER NOT NULL DEFAULT 0,
-                owner_id  INTEGER DEFAULT NULL
+                owner_id  INTEGER DEFAULT NULL,
+                image_url TEXT    DEFAULT NULL
             );
         """)
+        # Migration: add image_url to databases created before this column existed
+        try:
+            conn.execute('ALTER TABLE characters ADD COLUMN image_url TEXT DEFAULT NULL')
+        except Exception:
+            pass  # Column already exists
+
+
+def seed_characters() -> None:
+    """Populate the characters table with the default roster.
+
+    Only runs when the table is completely empty, so it will never
+    overwrite data added by admins after first launch.
+
+    Rarity tiers
+    ------------
+    Common     (value  10) — plentiful, easy to get
+    Uncommon   (value  50) — moderate chance
+    Rare       (value 200) — harder to land
+    Epic       (value 500) — very scarce
+    Legendary  (value 2000) — extremely rare
+    """
+    with _connect() as conn:
+        count = conn.execute('SELECT COUNT(*) FROM characters').fetchone()[0]
+        if count > 0:
+            return
+        roster = [
+            # Common
+            ('Goblin',      10),
+            ('Slime',       10),
+            ('Rat',         10),
+            ('Bat',         10),
+            ('Wolf',        10),
+            ('Sprite',      10),
+            ('Imp',         10),
+            ('Pixie',       10),
+            # Uncommon
+            ('Kobold',      50),
+            ('Fairy',       50),
+            ('Gnome',       50),
+            ('Bandit',      50),
+            ('Archer',      50),
+            ('Scout',       50),
+            ('Bard',        50),
+            # Rare
+            ('Wizard',     200),
+            ('Knight',     200),
+            ('Paladin',    200),
+            ('Rogue',      200),
+            ('Ranger',     200),
+            ('Monk',       200),
+            ('Druid',      200),
+            # Epic
+            ('Dragon',     500),
+            ('Phoenix',    500),
+            ('Hydra',      500),
+            ('Gryphon',    500),
+            ('Titan',      500),
+            ('Kraken',     500),
+            # Legendary
+            ('Celestia',  2000),
+            ('Aether',    2000),
+            ('Shadowlord', 2000),
+        ]
+        conn.executemany(
+            'INSERT INTO characters (name, value) VALUES (?, ?)', roster
+        )
 
 
 # ── Users ─────────────────────────────────────────────────────────────────────
@@ -148,19 +216,21 @@ def get_player_characters(user_id: int) -> list:
         ).fetchall()
 
 
-def create_character(name: str, value: int) -> None:
+def create_character(name: str, value: int, image_url: str | None = None) -> None:
     """Insert a new character into the pool.
 
     Args:
         name: Display name for the character (must be unique).
         value: Point value assigned to this character.
+        image_url: Optional URL to an image shown in Discord embeds.
 
     Raises:
         sqlite3.IntegrityError: If a character with this name already exists.
     """
     with _connect() as conn:
         conn.execute(
-            'INSERT INTO characters (name, value) VALUES (?, ?)', (name, value)
+            'INSERT INTO characters (name, value, image_url) VALUES (?, ?, ?)',
+            (name, value, image_url)
         )
 
 

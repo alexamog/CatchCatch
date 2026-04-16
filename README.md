@@ -1,6 +1,6 @@
 # CatchCatch
 
-CatchCatch is a Discord gacha bot where players roll to collect virtual characters, build a collection, and compete for the highest point total. Characters are added by admins and drawn randomly from a shared pool.
+CatchCatch is a Discord gacha bot where players roll to collect virtual characters, build a collection, and compete for the highest point total. Characters are seeded automatically on first launch and new ones can be added by admins at any time.
 
 ---
 
@@ -31,7 +31,8 @@ CatchCatch/
 2. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
 3. Click **New Application** and give it a name
 4. Go to the **Bot** tab and click **Add Bot**
-5. Under the **Token** section, click **Copy**
+5. Under **Privileged Gateway Intents**, enable **Message Content Intent**
+6. Under the **Token** section, click **Copy**
 
 ### 2. Configure the token
 
@@ -61,9 +62,13 @@ https://discord.com/oauth2/authorize?client_id=CLIENT_ID_HERE&permissions=2048&s
 python app.py
 ```
 
+The SQLite database is created automatically on first launch and seeded with the default character roster. No extra setup required.
+
 ---
 
 ## Commands
+
+Use `!help` in Discord to see this list in-server.
 
 ### Player commands
 
@@ -75,6 +80,7 @@ python app.py
 | `!info [name]` | Look up a character's value and ownership status |
 | `!collection` | View your characters and total points |
 | `!available` | List all unclaimed characters |
+| `!help` | Show the in-server command reference |
 | `!slap [@user]` | Slap another server member (easter egg) |
 
 ### Admin commands
@@ -94,9 +100,25 @@ These commands require the **Admin** role in your Discord server.
 
 ---
 
+## Character roster
+
+The following characters are seeded automatically on first launch.
+
+| Rarity | Value | Characters |
+|---|---|---|
+| ⬜ Common | 10 | Goblin, Slime, Rat, Bat, Wolf, Sprite, Imp, Pixie |
+| 🟩 Uncommon | 50 | Kobold, Fairy, Gnome, Bandit, Archer, Scout, Bard |
+| 🟦 Rare | 200 | Wizard, Knight, Paladin, Rogue, Ranger, Monk, Druid |
+| 🟪 Epic | 500 | Dragon, Phoenix, Hydra, Gryphon, Titan, Kraken |
+| 🟨 Legendary | 2000 | Celestia, Aether, Shadowlord |
+
+Admins can add new characters at any time with `!create`.
+
+---
+
 ## Notes
 
-- Character names must contain only letters.
+- Character names must contain only letters when using `!create`.
 - Character values must be positive integers.
 - Players must `!register` before they can `!roll`.
 - If a character name already exists, `!create` will reject the duplicate.

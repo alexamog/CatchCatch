@@ -16,38 +16,48 @@ from database import db
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+if not TOKEN:
+    raise RuntimeError('DISCORD_TOKEN is not set in .env')
 
 db.init_db()
+db.seed_characters()
 
-bot = commands.Bot(command_prefix='!')
+intents = discord.Intents.default()
+intents.message_content = True
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        bot.load_extension(f'cogs.{filename[:-3]}')
+bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
+
+
+@bot.event
+async def setup_hook() -> None:
+    """Load all cogs from the cogs/ directory on startup."""
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            await bot.load_extension(f'cogs.{filename[:-3]}')
 
 
 @bot.command()
 @commands.is_owner()
-async def load(ctx, extension):
+async def load(ctx: commands.Context[commands.Bot], extension: str) -> None:
     """Load a cog by name. Bot owner only.
 
     Usage: !load [cog name]
     """
-    bot.load_extension(f'cogs.{extension}')
+    await bot.load_extension(f'cogs.{extension}')
 
 
 @bot.command()
 @commands.is_owner()
-async def unload(ctx, extension):
+async def unload(ctx: commands.Context[commands.Bot], extension: str) -> None:
     """Unload a cog by name. Bot owner only.
 
     Usage: !unload [cog name]
     """
-    bot.unload_extension(f'cogs.{extension}')
+    await bot.unload_extension(f'cogs.{extension}')
 
 
 @bot.command(name='slap')
-async def slap(ctx, target: discord.Member):
+async def slap(ctx: commands.Context[commands.Bot], target: discord.Member) -> None:
     """EASTER EGG — Slap another server member.
 
     Usage: !slap [@user]

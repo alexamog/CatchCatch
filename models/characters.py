@@ -14,7 +14,7 @@ class Character:
         owned: Whether the character is currently owned by a player.
     """
 
-    def __init__(self, name: str, value: int, owned: bool = False, owner: int = None):
+    def __init__(self, name: str, value: int, owned: bool = False, owner: int | None = None) -> None:
         """Initialise a Character.
 
         Args:
@@ -28,13 +28,13 @@ class Character:
         self.owned = owned
         self._owner = owner
 
-    def discard(self):
+    def discard(self) -> None:
         """Return the character to the pool by clearing its owner."""
         self._owner = None
         self.owned = False
 
     @property
-    def owner(self):
+    def owner(self) -> int | None:
         """Discord user ID of the current owner, or None if unowned."""
         return self._owner
 
